@@ -15,5 +15,6 @@ data class Movie(
     val posterPath: String?,
     @SerializedName("vote_average")
     val voteAverage: Float,
-    val overview: String?
+    val overview: String?,
+    var liked: Boolean = false
 )

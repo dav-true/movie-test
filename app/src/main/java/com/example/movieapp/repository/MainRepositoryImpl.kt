@@ -1,5 +1,6 @@
 package com.example.movieapp.repository
 
+import android.util.Log
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
@@ -7,10 +8,16 @@ import androidx.paging.cachedIn
 import com.example.movieapp.api.MovieApiService
 import com.example.movieapp.dto.MovieResponse
 import com.example.movieapp.dto.movie.Movie
+import com.example.movieapp.dto.movie.MovieDao
 import com.example.movieapp.paging.MoviesPagingSource
 import kotlinx.coroutines.flow.Flow
 
-class MainRepositoryImpl(private val apiService: MovieApiService) : MainRepository {
+class MainRepositoryImpl(
+    private val apiService: MovieApiService,
+    private val movieDao: MovieDao
+) : MainRepository {
+
+
     override fun getMovies(): Flow<PagingData<Movie>> {
         return Pager(
             config = PagingConfig(
@@ -19,7 +26,7 @@ class MainRepositoryImpl(private val apiService: MovieApiService) : MainReposito
                 enablePlaceholders = false
             ),
             pagingSourceFactory = {
-                MoviesPagingSource(service = apiService)
+                MoviesPagingSource(service = apiService, movieDao = movieDao)
             }
         ).flow
     }

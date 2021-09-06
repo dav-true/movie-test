@@ -1,9 +1,7 @@
 package com.example.movieapp.dto.favorite_movie
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
+import com.example.movieapp.helpers.SharePreferencesHelper
 
 @Dao
 interface FavoriteMovieDao {
@@ -13,4 +11,8 @@ interface FavoriteMovieDao {
 
     @Query("SELECT * from favorite_movies")
     suspend fun getFavoriteMovies(): List<FavoriteMovie>
+
+
+    @Delete
+    suspend fun deleteFavoriteMovie(favoriteMovie: FavoriteMovie)
 }

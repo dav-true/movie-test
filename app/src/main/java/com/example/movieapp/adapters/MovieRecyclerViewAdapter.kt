@@ -1,11 +1,9 @@
 package com.example.movieapp.adapters
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import androidx.paging.PagingData
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -14,11 +12,16 @@ import com.example.movieapp.R
 import com.example.movieapp.api.Constants
 import com.example.movieapp.databinding.MovieItemBinding
 import com.example.movieapp.dto.movie.Movie
+import com.example.movieapp.interfaces.MovieClickListener
 
-class MovieRecyclerViewAdapter(private val context: Context) :
-    PagingDataAdapter<Movie, MovieRecyclerViewAdapter.ViewHolder>(MovieComparator) {
+class MovieRecyclerViewAdapter(
+    private val context: Context
+) : PagingDataAdapter<Movie, MovieRecyclerViewAdapter.ViewHolder>(MovieComparator) {
+
+    lateinit var clickListener: MovieClickListener
 
     class ViewHolder(val binding: MovieItemBinding) : RecyclerView.ViewHolder(binding.root) {
+
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -32,6 +35,26 @@ class MovieRecyclerViewAdapter(private val context: Context) :
                     ?: context.getDrawable(R.drawable.no_poster))
                 .into(poster)
             rating.text = getItem(position)?.voteAverage.toString()
+
+
+
+            if (getItem(position)?.liked == true) {
+                likeBtn.visibility = View.GONE
+            } else {
+                likeBtn.visibility = View.VISIBLE
+                likeBtn.text = "Like"
+                likeBtn.setOnClickListener {
+                    getItem(position)?.liked = true
+                    getItem(position)?.let { it1 -> clickListener.like(it1) }
+                    notifyItemChanged(position, false)
+                }
+            }
+
+
+            shareBtn.setOnClickListener {
+                clickListener.share(getItem(position)!!)
+            }
+
         }
 
     }
@@ -41,7 +64,6 @@ class MovieRecyclerViewAdapter(private val context: Context) :
             LayoutInflater.from(parent.context), parent, false
         )
     )
-
 
     object MovieComparator : DiffUtil.ItemCallback<Movie>() {
         override fun areItemsTheSame(oldItem: Movie, newItem: Movie) =

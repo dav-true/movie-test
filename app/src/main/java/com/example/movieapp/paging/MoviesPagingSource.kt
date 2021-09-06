@@ -5,12 +5,15 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.example.movieapp.api.MovieApiService
 import com.example.movieapp.dto.movie.Movie
+import com.example.movieapp.dto.movie.MovieDao
 import retrofit2.HttpException
 import java.io.IOException
 
 class MoviesPagingSource(
-    private val service: MovieApiService
+    private val service: MovieApiService,
+    private val movieDao: MovieDao
 ) : PagingSource<Int, Movie>() {
+
     override fun getRefreshKey(state: PagingState<Int, Movie>): Int? {
         return state.anchorPosition?.let { anchorPosition ->
             state.closestPageToPosition(anchorPosition)?.prevKey?.plus(1)
@@ -20,23 +23,24 @@ class MoviesPagingSource(
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Movie> {
         val pageIndex = params.key ?: 1
-        Log.d("params-key", pageIndex.toString())
 
         return try {
             val response = service.getMovies(
                 page = pageIndex
             )
 
-            val movies = response.results
-            val nextPageNumber: Int?
-
-            if (response.page != response.total_pages) {
-                nextPageNumber = response.page + 1
-            } else {
-                nextPageNumber = null
+            if (pageIndex == 1) {
+                movieDao.setMovies(response.results)
             }
 
-            Log.d("my-page", "Page index: $pageIndex, NextIndex: $nextPageNumber")
+            val movies = response.results
+            val nextPageNumber: Int? = if (response.page != response.total_pages) {
+                response.page + 1
+            } else {
+                null
+            }
+
+            Log.d("pagining", "Previous page: $pageIndex; Next page: $nextPageNumber")
 
             LoadResult.Page(
                 data = movies,

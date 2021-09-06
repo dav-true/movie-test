@@ -15,10 +15,10 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
+        binding.contentMain.viewPager.offscreenPageLimit = 3
+
         binding.contentMain.viewPager.adapter = ViewPagerAdapter(this)
-
         binding.bottomNavView.setupWithViewPager2(binding.contentMain.viewPager)
-
 
     }
 
