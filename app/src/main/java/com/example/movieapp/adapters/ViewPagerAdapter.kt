@@ -3,7 +3,7 @@ package com.example.movieapp.adapters
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.example.movieapp.ui.FavoriteFragment
+import com.example.movieapp.ui.favorite_movies.FavoriteFragment
 import com.example.movieapp.ui.all_movies.MoviesFragment
 
 class ViewPagerAdapter(activity: AppCompatActivity) : FragmentStateAdapter(activity) {

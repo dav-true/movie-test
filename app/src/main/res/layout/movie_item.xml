@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -76,7 +75,7 @@
                 android:id="@+id/like_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="40dp"
-                android:background="@drawable/selectable_ripple"
+                android:background="@drawable/selectable_ripple_8dp"
                 android:clickable="true"
                 android:fontFamily="sans-serif-black"
                 android:text="Like"
@@ -86,7 +85,7 @@
                 android:id="@+id/share_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="40dp"
-                android:background="@drawable/selectable_ripple"
+                android:background="@drawable/selectable_ripple_8dp"
                 android:clickable="true"
                 android:fontFamily="sans-serif-black"
                 android:text="Share"

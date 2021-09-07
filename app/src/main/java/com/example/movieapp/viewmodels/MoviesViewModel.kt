@@ -10,6 +10,7 @@ import com.example.movieapp.dto.favorite_movie.FavoriteMovie
 import com.example.movieapp.dto.favorite_movie.FavoriteMovieDao
 import com.example.movieapp.dto.movie.Movie
 import com.example.movieapp.dto.movie.MovieDao
+import com.example.movieapp.helpers.SharePreferencesHelper
 import com.example.movieapp.repository.MainRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -18,9 +19,8 @@ import kotlinx.coroutines.launch
 import java.lang.ref.WeakReference
 
 class MoviesViewModel(
-    private val context: WeakReference<Context>,
+    private val sharePreferencesHelper: SharePreferencesHelper,
     private val repository: MainRepository,
-    private val movieDao: MovieDao,
     private val favoriteMovieDao: FavoriteMovieDao
 ) : ViewModel() {
 
@@ -30,15 +30,24 @@ class MoviesViewModel(
     }
 
     suspend fun addFavoriteMovie(movie: Movie) {
-        favoriteMovieDao.addFavoriteMovie(FavoriteMovie(movie = movie))
+        favoriteMovieDao.addFavoriteMovie(
+            FavoriteMovie(
+                userId = sharePreferencesHelper.getUserId(),
+                movie = movie
+            )
+        )
     }
 
     suspend fun getFavoriteMovies() =
-        favoriteMovieDao.getFavoriteMovies()
+        favoriteMovieDao.getFavoriteMovies(userId = sharePreferencesHelper.getUserId())
 
     suspend fun deleteFavoriteMovie(movie: Movie) {
-        favoriteMovieDao.deleteFavoriteMovie(FavoriteMovie(movie = movie))
+        favoriteMovieDao.deleteFavoriteMovie(
+            FavoriteMovie(
+                userId = sharePreferencesHelper.getUserId() ,
+                movie = movie
+            )
+        )
     }
-
 
 }

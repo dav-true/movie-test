@@ -5,11 +5,11 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 
-@Entity(tableName = "movies", indices = [Index(value = ["movieId"], unique = true)])
+@Entity(tableName = "movies", indices = [Index(value = ["primaryKey"], unique = true)])
 data class Movie(
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true) val primaryKey: Int = 0,
     @SerializedName("id")
-    val movieId: Int?,
+    val movieId: Int,
     val title: String?,
     @SerializedName("poster_path")
     val posterPath: String?,

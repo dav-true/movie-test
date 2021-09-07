@@ -26,8 +26,7 @@ class LoadingStateAdapter<T : Any, VH : RecyclerView.ViewHolder>(
     override fun onBindViewHolder(
         holder: NetworkStateItemViewHolder,
         loadState: LoadState
-    ) =
-        holder.bind(loadState)
+    ) = holder.bind(loadState)
 
 
     class NetworkStateItemViewHolder(
@@ -45,7 +44,7 @@ class LoadingStateAdapter<T : Any, VH : RecyclerView.ViewHolder>(
                 retryButton.isVisible = loadState is LoadState.Error
                 errorMsg.isVisible =
                     !(loadState as? LoadState.Error)?.error?.message.isNullOrBlank()
-                errorMsg.text = (loadState as? LoadState.Error)?.error?.message
+                errorMsg.text = "Internet connection error"
             }
         }
     }

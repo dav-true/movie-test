@@ -15,8 +15,8 @@ import retrofit2.create
 import java.util.concurrent.TimeUnit
 
 
-const val connectTimeout: Long = 15
-const val readTimeout: Long = 15
+const val connectTimeout: Long = 10
+const val readTimeout: Long = 10
 
 val netModule = module {
     single { provideGson() }
@@ -31,11 +31,6 @@ fun provideGson() = GsonBuilder().setLenient().create()!!
 fun provideOkHttpClient() = OkHttpClient.Builder()
     .connectTimeout(connectTimeout, TimeUnit.SECONDS)
     .readTimeout(readTimeout, TimeUnit.SECONDS)
-    .addInterceptor(Interceptor {
-        val request =
-            it.request().newBuilder().addHeader("Authorization", BuildConfig.ApiKey).build()
-        it.proceed(request)
-    })
     .build()
 
 fun provideInstagramApiService(okHttpClient: OkHttpClient, gson: Gson) =

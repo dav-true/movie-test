@@ -1,5 +1,5 @@
 package com.example.movieapp.interfaces
 
-interface EmptyListInterface {
+interface EmptyListListener {
     fun showListIsEmpty()
 }

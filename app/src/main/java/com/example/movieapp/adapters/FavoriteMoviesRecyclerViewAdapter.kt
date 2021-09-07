@@ -9,6 +9,7 @@ import com.example.movieapp.R
 import com.example.movieapp.api.Constants
 import com.example.movieapp.databinding.MovieItemBinding
 import com.example.movieapp.dto.favorite_movie.FavoriteMovie
+import com.example.movieapp.interfaces.EmptyListListener
 import com.example.movieapp.interfaces.FavoriteMovieClickListener
 import com.example.movieapp.interfaces.MovieClickListener
 
@@ -18,6 +19,7 @@ class FavoriteMoviesRecyclerViewAdapter(
 
     val favoriteMoviesList: MutableList<FavoriteMovie> = mutableListOf()
     lateinit var clickListener: FavoriteMovieClickListener
+    lateinit var emptyListListener: EmptyListListener
 
     class ViewHolder(val binding: MovieItemBinding) :
         RecyclerView.ViewHolder(binding.root)
@@ -49,6 +51,8 @@ class FavoriteMoviesRecyclerViewAdapter(
                 }
                 favoriteMoviesList.removeAt(holder.absoluteAdapterPosition)
                 notifyItemRemoved(holder.absoluteAdapterPosition)
+                if (itemCount == 0)
+                    emptyListListener.showListIsEmpty()
             }
 
             shareBtn.setOnClickListener {

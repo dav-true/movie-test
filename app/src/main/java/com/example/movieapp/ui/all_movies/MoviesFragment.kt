@@ -9,8 +9,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import androidx.paging.LoadState
-import androidx.paging.filter
+import androidx.paging.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.OnItemTouchListener
@@ -22,7 +21,6 @@ import com.example.movieapp.dto.favorite_movie.FavoriteMovie
 import com.example.movieapp.dto.movie.Movie
 import com.example.movieapp.helpers.GestureListener
 import com.example.movieapp.helpers.viewBinding
-import com.example.movieapp.helpers.withLoadStateAdapters
 import com.example.movieapp.interfaces.MovieClickListener
 import com.example.movieapp.viewmodels.MoviesViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -48,31 +46,29 @@ class MoviesFragment : Fragment(R.layout.fragment_movies), MovieClickListener {
         binding.recyclerView.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = with(movieAdapter) {
+                addLoadStateListener {
+                    if (itemCount > 0) {
+                        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
+                            binding.loading.visibility = View.GONE
+                            if (binding.swipeRefresh.isRefreshing) {
+                                binding.swipeRefresh.isRefreshing = false
+                            }
+                        }
+                    }
+                }
                 withLoadStateHeaderAndFooter(
-                    header = LoadingStateAdapter(movieAdapter),
-                    footer = LoadingStateAdapter(movieAdapter)
+                    header = LoadingStateAdapter(this),
+                    footer = LoadingStateAdapter(this)
                 )
             }
             addOnItemTouchListener(rvTouchListener(gestureDetector))
         }
 
-
-//        with(movieAdapter) {
-//            clickListener = this@MoviesFragment
-//            binding.recyclerView.addOnItemTouchListener(rvTouchListener(gestureDetector))
-//            binding.recyclerView.layoutManager = LinearLayoutManager(context)
-//            binding.recyclerView.adapter = withLoadStateHeaderAndFooter(
-//                header = LoadingStateAdapter(this),
-//                footer = LoadingStateAdapter(this)
-//            )
-//        }
-
-        binding.loading.setOnRefreshListener {
+        binding.swipeRefresh.setOnRefreshListener {
             initLoad()
         }
+
         initLoad()
-
-
     }
 
     private fun initLoad() {
@@ -82,7 +78,6 @@ class MoviesFragment : Fragment(R.layout.fragment_movies), MovieClickListener {
     }
 
     private fun getAllMovies() = viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
-
         viewModel.getAllMovies()
             .map {
                 it.filter { movie ->
@@ -91,16 +86,10 @@ class MoviesFragment : Fragment(R.layout.fragment_movies), MovieClickListener {
                     }
                     true
                 }
-            }
-            .onStart {
-                if (binding.loading.isRefreshing) {
-                    binding.loading.isRefreshing = false
-                }
-            }
-            .collectLatest { pagingData ->
-
+            }.collectLatest { pagingData ->
                 movieAdapter.submitData(pagingData)
             }
+
     }
 
     private fun getFavoriteMovies() = viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {

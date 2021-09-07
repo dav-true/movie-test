@@ -1,12 +1,11 @@
 package com.example.movieapp.dto.favorite_movie
 
-import androidx.room.Embedded
-import androidx.room.Entity
-import androidx.room.Index
-import androidx.room.PrimaryKey
+import androidx.room.*
 import com.example.movieapp.dto.movie.Movie
 
-@Entity(tableName = "favorite_movies", primaryKeys = ["movieId"])
+@Entity(tableName = "favorite_movies")
 data class FavoriteMovie(
+    @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    val userId: String,
     @Embedded val movie: Movie
 )

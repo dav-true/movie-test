@@ -36,8 +36,6 @@ class MovieRecyclerViewAdapter(
                 .into(poster)
             rating.text = getItem(position)?.voteAverage.toString()
 
-
-
             if (getItem(position)?.liked == true) {
                 likeBtn.visibility = View.GONE
             } else {
@@ -49,7 +47,6 @@ class MovieRecyclerViewAdapter(
                     notifyItemChanged(position, false)
                 }
             }
-
 
             shareBtn.setOnClickListener {
                 clickListener.share(getItem(position)!!)
